@@ -36,7 +36,7 @@
             setTimeout(function() {
                 postMessage(drawPermutation(boardSize * boardSize));
                 processing = false;
-            }, 3000);
+            }, 1000);
         }
     }
 })();

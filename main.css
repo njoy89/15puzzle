@@ -1,0 +1,90 @@
+html, body {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+#board {
+    max-width: 700px;
+    max-height: 700px;
+    margin: 10px;
+    border: 2px solid #ccc;
+    border-radius: 10px;
+    background: #eee;
+    padding: 10px;
+    position: relative;
+}
+
+.block {
+    display: inline-block;
+    float: left;
+}
+
+.block > div {
+    margin: 2px;
+    padding: 10px;
+    text-align: center;
+    position: relative;
+}
+
+.block > div.filled-block {
+    border: 1px solid #bbb;
+    background: #ccc;
+    border-radius: 5px;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.block > div.filled-block:hover {
+    cursor: pointer;
+}
+
+.block > div.empty-block {
+    border: 1px solid transparent;
+}
+
+.block > div > div {
+    font-size: 50px;
+    font-weight: 500;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -25px;
+    margin-left: -12px;
+
+    font-family: "Comic Sans MS", cursive, sans-serif;
+}
+
+#init-screen {
+    height: 300px;
+    width: 400px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    margin: -150px 0 0 -200px;
+    text-align: center;
+
+    background: #f5f5f5;
+    border-radius: 10px;
+    border: 1px solid #ccc;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
+}
+
+#init-screen button {
+    margin-top: 10px;
+}
+
+#init-screen img {
+    margin: auto;
+    margin-top: 20px;
+    width: 120px;
+    height: 120px;
+}
+
+hr {
+    border-top: 1px solid #ccc !important;
+}
+
+#panel-settings {
+    margin-top: 40px;
+    text-align: center;
+}

@@ -122,7 +122,6 @@
 	    						width: $parentEl.width()
 	    					});
 
-                            debugger;
 	    					$parentEl.animate(animateObject, 500, function() {
 		    					$parentEl.
 		    						css({
@@ -147,7 +146,7 @@
 	    				}
 	    			});
 
-                    $board.show();
+                    $board.toggleClass('hide');
 	    		}
 
 	    		function adjustBlockHeights() {
@@ -156,7 +155,7 @@
 	    				widthBi = $blocks.eq(BOARD_SIZE - 1).width();
 
 	    			// 1% issue
-	    			$('.block > div').each(function(ix) {
+                    $blocks.each(function(ix) {
 	    				$(this).height(ix < (BOARD_SIZE * (BOARD_SIZE - 1)) ? widthSm : widthBi);
 	    			});
 
@@ -164,118 +163,74 @@
 	    		}
 
 	    		$(window).load(function() {
-                    var $initWindow = $('#init-screen');
+                    var $initWindow = $('#init-screen'),
+                        $panelSettings = $('#panel-settings');
 
-                    worker = new Worker('backend.js');
+                    function showLoadingText() {
+                        $initWindow.find('h1:eq(0)').toggleClass('hide');
+                        $initWindow.find('h1:eq(1)').toggleClass('hide');
+                        $initWindow.find('button').toggleClass('hide');
+                        $initWindow.find('img').toggleClass('hide');
+                    }
 
-                    $initWindow.on('click', 'button', function() {
+                    function requestBoard() {
+                        showLoadingText();
+
                         worker.postMessage({
                             type: 'boardRequest',
                             boardSize: BOARD_SIZE
                         });
+                    }
+
+                    $initWindow.on('click', 'button', requestBoard);
+
+                    $panelSettings.on('click', 'button:eq(0)', function() {
+                        $initWindow.toggleClass('hide');
+                        $board.toggleClass('hide');
+                        $panelSettings.toggleClass('hide');
+
+                        requestBoard();
                     });
+
+                    $panelSettings.on('click', 'button:eq(1)', function() {
+                        alert('TODO');
+                    });
+
+                    worker = new Worker('backend.js');
 
                     worker.onmessage = function(e) {
                         var permutation = e.data;
 
-                        $initWindow.hide();
+                        $initWindow.toggleClass('hide');
 
                         generateBoard(permutation);
                         adjustBlockHeights();
                         $(window).resize(adjustBlockHeights);
+
+                        $panelSettings.toggleClass('hide');
+                        showLoadingText();
                     };
 	    		});
 	    	})(window.jQuery);
 	    </script>
-	    <style type="text/css">
-            html, body {
-                margin: 0;
-                padding: 0;
-                width: 100%;
-            }
-
-            #board {
-	    		max-width: 700px;
-	    		max-height: 700px;
-	    		margin: 10px;
-	    		border: 2px solid #ccc;
-	    		border-radius: 10px;
-	    		background: #eee;
-	    		padding: 10px;
-	    		position: relative;
-                display: none;
-	    	}
-
-	    	.block {
-				display: inline-block;
-				float: left;
-	    	}
-
-	    	.block > div {	    			    		
-	    		margin: 2px;	    		
-	    		padding: 10px;
-	    		text-align: center;
-	    		position: relative;
-	    	}
-
-	    	.block > div.filled-block {
-				border: 1px solid #bbb;
-				background: #ccc;
-	    		border-radius: 5px;
-	    		box-shadow: inset 0 1px 3px rgba(0,0,0,0.2);
-	    	}
-
-	    	.block > div.filled-block:hover {
-	    		cursor: pointer;
-	    	}
-
-	    	.block > div.empty-block {
-	    		border: 1px solid transparent;
-	    	}
-
-	    	.block > div > div {
-	    		font-size: 50px;
-	    		font-weight: 500;
-	    		position: absolute;
-	    		top: 50%;
-	    		left: 50%;
-	    		margin-top: -25px;
-	    		margin-left: -12px;
-
-	    		font-family: "Comic Sans MS", cursive, sans-serif;
-	    	}
-
-            #init-screen {
-                height: 300px;
-                width: 400px;
-                position: absolute;
-                left: 50%;
-                top: 50%;
-                margin: -150px 0 0 -200px;
-                text-align: center;
-
-                background: #f5f5f5;
-                border-radius: 10px;
-                border: 1px solid #ccc;
-            }
-
-            #init-screen button {
-                margin-top: 10px;
-            }
-
-            hr {
-                border-top: 1px solid #ccc !important;
-            }
-	    </style>
+        <link rel="stylesheet" type="text/css" href="main.css">
         <link rel="stylesheet" type="text/css" href="bootstrap.css">
         <link rel="stylesheet" type="text/css" href="bootstrap-theme.css">
 	</head>
 	<body>
-        <div id="board"></div>
+        <div id="board" class="hide"></div>
+        <div id="panel-settings" class="hide">
+            <button class="btn btn-primary btn-lg">New game</button>
+            <button class="btn btn-primary btn-lg">Show solution</button>
+        </div>
         <div id="init-screen">
             <h1 class="text-uppercase">15 puzzle game</h1>
+            <h1 class="text-uppercase hide">Waiting...</h1>
+
             <hr>
+
             <button class="btn btn-primary btn-lg">Play the game</button>
+            <img class="hide" src="http://www.securenet.com/sites/default/files/spinner.gif"/>
         </div>
 		<div id="game-finished-dialog"></div>
     </body>
